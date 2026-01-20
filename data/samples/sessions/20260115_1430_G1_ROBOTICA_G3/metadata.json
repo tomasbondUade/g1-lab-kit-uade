@@ -1,0 +1,18 @@
+{
+  "session_name": "20260115_1430_G1_ROBOTICA_G3",
+  "robot_type": "g1",
+  "start_time": "2026-01-15T14:30:00",
+  "end_time": "2026-01-15T15:00:00",
+  "duration_seconds": 1800,
+  "materia": "ROBOTICA",
+  "grupo": "G3",
+  "operator": "Juan Pérez",
+  "risk_level": 1,
+  "notes": "Sesión de ejemplo - Prueba de movimientos básicos del robot G1. Se ejecutaron comandos de stand_up, balance y sit_down. Sin incidentes.",
+  "lab_location": "Lab Robotica - UADE",
+  "equipment": {
+    "robot_id": "g1-01",
+    "battery_start": 85,
+    "battery_end": 72
+  }
+}

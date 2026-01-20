@@ -1,0 +1,11 @@
+[2026-01-15 14:30:00] SESSION_START - Operador: Juan Pérez
+[2026-01-15 14:30:05] SAFETY_CHECK - Perimetro despejado: OK
+[2026-01-15 14:30:10] COMMAND: stand_up - Robot iniciando postura
+[2026-01-15 14:30:15] STATUS: Standing - Altura alcanzada
+[2026-01-15 14:30:20] COMMAND: balance - Equilibrio activado
+[2026-01-15 14:30:25] STATUS: Balancing - IMU estabilizado
+[2026-01-15 14:30:35] COMMAND: wave_right_hand - Gesto de saludo
+[2026-01-15 14:30:40] STATUS: Wave completed
+[2026-01-15 14:30:50] COMMAND: sit_down - Finalizando secuencia
+[2026-01-15 14:30:55] STATUS: Seated - Posición segura
+[2026-01-15 14:31:00] SESSION_END - Duración: 1 min, Batería final: 82%
