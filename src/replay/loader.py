@@ -27,9 +27,10 @@ class Session:
         name: Nombre de la sesión
     """
     
-    def __init__(self, session_path: Path):
-        self.path = session_path
-        self.name = session_path.name
+    def __init__(self, session_path):
+        # Aceptar tanto Path como str
+        self.path = Path(session_path) if not isinstance(session_path, Path) else session_path
+        self.name = self.path.name
         self.metadata: Optional[Dict] = None
         self.telemetry: Optional[pd.DataFrame] = None
     
@@ -57,6 +58,49 @@ class Session:
         self.load_metadata()
         self.load_telemetry()
     
+    def get_metadata(self) -> Dict[str, Any]:
+        """Retorna metadata (carga si no está cargada)"""
+        if self.metadata is None:
+            self.load_metadata()
+        return self.metadata
+    
+    def get_telemetry(self) -> pd.DataFrame:
+        """Retorna telemetría (carga si no está cargada)"""
+        if self.telemetry is None:
+            self.load_telemetry()
+        return self.telemetry
+    
+    def get_commands(self) -> list[Dict[str, Any]]:
+        """Lee y retorna comandos desde commands.log"""
+        commands_file = self.path / "commands.log"
+        if not commands_file.exists():
+            return []
+        
+        commands = []
+        with open(commands_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    parts = line.split(' - ', 2)
+                    if len(parts) >= 2:
+                        commands.append({
+                            'timestamp': parts[0],
+                            'event': parts[1],
+                            'details': parts[2] if len(parts) > 2 else ''
+                        })
+                except Exception:
+                    continue
+        return commands
+    
+    def duration(self) -> Optional[float]:
+        """Calcula duración de la sesión en minutos"""
+        metadata = self.get_metadata()
+        if 'duration_minutes' in metadata:
+            return metadata['duration_minutes']
+        return None
+    
     def __repr__(self):
         return f"Session(name={self.name}, path={self.path})"
 
@@ -82,22 +126,21 @@ def load_session(session_path: Path) -> Session:
     return session
 
 
-def list_sessions(directory: Path) -> list[Path]:
+def list_sessions(directory: Path, robot_type: Optional[str] = None) -> list[Path]:
     """
     Lista todas las sesiones en un directorio.
     
     Args:
         directory: Path al directorio de sesiones (ej: data/local/sessions)
+        robot_type: Filtrar por tipo de robot ('g1' o 'go2'), None para todos
         
     Returns:
         list[Path]: Lista de paths a sesiones
         
     Example:
         >>> sessions = list_sessions(Path("data/samples/sessions"))
-        >>> for s in sessions:
-        ...     print(s.name)
+        >>> go2_sessions = list_sessions(Path("data/samples/sessions"), robot_type="go2")
     """
-    # TODO: Implementar
     if not directory.exists():
         return []
     
@@ -105,6 +148,15 @@ def list_sessions(directory: Path) -> list[Path]:
     sessions = []
     for item in directory.iterdir():
         if item.is_dir() and (item / "metadata.json").exists():
+            # Filtrar por robot_type si se especifica
+            if robot_type:
+                try:
+                    with open(item / "metadata.json", 'r') as f:
+                        metadata = json.load(f)
+                    if metadata.get('robot_type', '').lower() != robot_type.lower():
+                        continue
+                except Exception:
+                    continue
             sessions.append(item)
     
     return sorted(sessions)

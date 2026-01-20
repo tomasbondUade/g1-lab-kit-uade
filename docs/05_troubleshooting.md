@@ -55,6 +55,37 @@ Usar el Python correcto al crear venv (según el caso).
 
 ---
 
+## 📦 2.3 Error SSL al instalar paquetes (pip)
+
+**Síntoma:** 
+```
+SSL: CERTIFICATE_VERIFY_FAILED
+certificate verify failed: self signed certificate in certificate chain
+```
+
+**Causa:** Red corporativa/universitaria con proxy o certificados propios (común en UADE).
+
+**Solución rápida:**
+```powershell
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org <paquete>
+```
+
+**Ejemplo:**
+```powershell
+# Instalar SDK
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -e third_party/unitree_sdk2_python
+
+# Instalar requirements
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r env/requirements.txt
+```
+
+**Solución permanente** (configurar pip):
+```powershell
+pip config set global.trusted-host "pypi.org files.pythonhosted.org"
+```
+
+---
+
 ## 🧪 3) Problemas con entorno virtual (venv)
 
 ### 3.1 activate.ps1 bloqueado por políticas

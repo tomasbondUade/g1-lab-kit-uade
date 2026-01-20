@@ -42,6 +42,12 @@ def generate_session_name(
     if robot_clean not in ["G1", "GO2"]:
         raise ValueError(f"Robot type inválido: {robot_type}. Debe ser 'g1' o 'go2'")
     
+    # Validar materia y grupo no vacíos
+    if not materia or not materia.strip():
+        raise ValueError("Materia no puede estar vacía")
+    if not grupo or not grupo.strip():
+        raise ValueError("Grupo no puede estar vacío")
+    
     if timestamp is None:
         timestamp = datetime.now()
     

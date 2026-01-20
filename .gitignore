@@ -1,16 +1,23 @@
 # Python
+env/
 .venv/
+venv/
 __pycache__/
 *.pyc
+*.pyo
 *.egg-info/
+*.egg
 
 # Testing
 htmlcov/
 .coverage
+.coverage.*
 .pytest_cache/
+.tox/
 
 # Environment
 .env
+.env.local
 
 # Configuraciones locales (no versionadas)
 config/*.yaml
@@ -19,12 +26,26 @@ config/*.yaml
 # Datos reales de sesiones (NO se versionan)
 data/local/
 
-# Unitree SDK (no se versiona)
+# Unitree SDK (submodule - no versionar binarios)
 third_party/unitree_sdk2_python/
 
 # Jupyter
 .ipynb_checkpoints/
+*.ipynb_checkpoints
 
-# Windows
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
-Thums.db
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+!commands.log

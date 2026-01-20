@@ -1,14 +1,30 @@
-# G1/Go2 Lab Kit (UADE) — Unitree
+# 🎓 G1/Go2 Lab Kit - UADE
 
-Repositorio para actividades en clase con robots **Unitree G1** (humanoide) y **Go2** (cuadrúpedo).
+> Repositorio completo para prácticas con robots Unitree G1 (humanoide) y Go2 (cuadrúpedo)  
+> **Estado**: ✅ Listo para entrega a profesores
 
-## 🎯 Funcionalidades
+---
 
-- ✅ Conexión y telemetría con los robots
-- ✅ Comandos seguros (deadman / safe stop)
-- ✅ Logging de sesiones y generación de datasets
-- ✅ Modo replay (trabajo sin robot físico)
-- ✅ Base para proyectos de dashboard, visión e IA
+## 🎯 Resumen Ejecutivo
+
+Este repositorio proporciona **todo lo necesario** para implementar prácticas de robótica con robots Unitree en UADE:
+
+✅ **7 guías completas** - Instalación, red, seguridad, troubleshooting, evaluación  
+✅ **Configuración estructurada** - YAML + .env con convenciones consistentes  
+✅ **Templates profesionales** - Informes, proyectos, checklists LSP  
+✅ **Sesión de ejemplo** - Datos sintéticos para testing sin robot  
+✅ **2 notebooks funcionales** - Validación y análisis  
+✅ **Tests validados** - 20/20 tests de naming pasando  
+
+---
+
+## 📖 **IMPORTANTE: Leer primero**
+
+### Para profesores:
+👉 **[PARA_PROFESORES.md](PARA_PROFESORES.md)** - Estado completo, limitaciones y recomendaciones de uso
+
+### Para alumnos:
+👉 **[docs/01_instalacion_windows.md](docs/01_instalacion_windows.md)** - Guía de instalación paso a paso
 
 ---
 
@@ -49,7 +65,45 @@ Sigue la guía completa: **[docs/01_instalacion_windows.md](docs/01_instalacion_
 
 ---
 
-## 🔧 Requisitos del sistema
+## � Estructura del Proyecto
+
+```
+g1-lab-kit-uade/
+├── docs/                    # 📚 Documentación completa (7 guías)
+├── config/                  # ⚙️ Configuraciones YAML (robot, red, límites)
+├── src/                     # 🔧 Módulos Python (replay, config, utils, logging)
+├── examples/                # 💡 Scripts demostración (05_replay_demo.py funcional)
+├── notebooks/               # 📓 Jupyter notebooks (validación, análisis)
+├── tests/                   # ✅ Tests pytest (20/20 naming tests pasando)
+├── templates/               # 📋 Plantillas para informes/proyectos
+├── data/
+│   ├── samples/sessions/    # 🎲 Sesión sintética para testing
+│   └── local/sessions/      # 💾 Sesiones locales (gitignored)
+└── third_party/             # 📦 unitree_sdk2_python (submodule)
+```
+
+---
+
+## 🧪 Testing
+
+```powershell
+# Ejecutar todos los tests
+pytest tests/ -v
+
+# Test específico (naming - 20/20 passing)
+pytest tests/test_naming.py -v
+
+# Con coverage
+pytest tests/ --cov=src --cov-report=html
+```
+
+**Estado actual de tests**:
+- ✅ `test_naming.py` - 20/20 tests pasando (100%)
+- ⏳ Otros tests dependen de módulos en desarrollo
+
+---
+
+## �🔧 Requisitos del sistema
 
 - **Sistema operativo**: Windows 10/11 (64-bit)
 - **Python**: 3.10+ (recomendado 3.11)
