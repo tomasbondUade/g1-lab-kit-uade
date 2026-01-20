@@ -19,3 +19,7 @@ python-dateutil>=2.8.2  # Manejo de fechas para logging
 # pandas>=1.3.0       # Análisis de datos de sesiones
 # matplotlib>=3.4.0   # Visualización de datos
 
+# Testing (opcional - solo para desarrollo)
+# pytest>=7.4.0       # Framework de testing
+# pytest-cov>=4.1.0   # Coverage de tests
+

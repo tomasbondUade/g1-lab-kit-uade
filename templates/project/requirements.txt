@@ -1,0 +1,8 @@
+# Dependencias adicionales del proyecto
+# (las del lab kit ya están en ../../env/requirements.txt)
+
+# TODO: Agregar dependencias específicas del proyecto si son necesarias
+# Ejemplos:
+# matplotlib>=3.5.0
+# seaborn>=0.12.0
+# scikit-learn>=1.0.0
