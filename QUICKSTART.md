@@ -22,10 +22,11 @@ git --version
 ```
 Si no está instalado: https://git-scm.com/download/win
 
-### Python 3.8+
+### Python 3.10+
 ```powershell
 python --version
 ```
+**Requerido**: Python 3.10 o superior (recomendado 3.11)  
 Si no está instalado: https://www.python.org/downloads/
 ⚠️ **Importante**: Marcar "Add Python to PATH" durante instalación
 

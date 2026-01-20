@@ -23,7 +23,7 @@ class Config:
     
     Atributos:
         data_mode: "replay" o "live"
-        robot_type: "G1" o "GO2"
+        robot_type: "g1" o "go2" (lowercase)
         robot_ip: IP del robot (solo live)
         session_name: Nombre de sesión actual
         project_root: Path a la raíz del proyecto
@@ -31,7 +31,7 @@ class Config:
     
     def __init__(self):
         self.data_mode: str = "replay"
-        self.robot_type: str = "G1"
+        self.robot_type: str = "g1"
         self.robot_ip: Optional[str] = None
         self.session_name: Optional[str] = None
         self.project_root: Path = Path(__file__).parent.parent.parent

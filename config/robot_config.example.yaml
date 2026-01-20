@@ -1,7 +1,7 @@
 # Configuración general del robot + SDK + telemetría + logging
 robot:
-  type: "G1"            # "G1" o "GO2"
-  asset_id: "G1-01"     # identificador interno / etiqueta física
+  type: "g1"            # "g1" o "go2" (lowercase)
+  asset_id: "g1-01"     # identificador interno / etiqueta física
   description: "Robot de laboratorio"
 
 sdk:
@@ -27,7 +27,7 @@ telemetry:
 
 logging:
   enabled: true
-  base_dir: "../data/sessions"
+  base_dir: "data/local/sessions"
   format: "csv"               # "csv" o "parquet" (si agregás soporte)
   include_metadata: true
   metadata_fields:

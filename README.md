@@ -51,10 +51,10 @@ Sigue la guía completa: **[docs/01_instalacion_windows.md](docs/01_instalacion_
 
 ## 🔧 Requisitos del sistema
 
-- **Sistema operativo**: Windows 10 o superior (64-bit)
-- **Python**: 3.8 o superior
+- **Sistema operativo**: Windows 10/11 (64-bit)
+- **Python**: 3.10+ (recomendado 3.11)
 - **Git**: Para clonar repositorios
-- **Visual Studio Build Tools**: Para compilar dependencias
+- **PowerShell**: Incluido en Windows
 - **Espacio en disco**: ~5 GB libres
 
 ---

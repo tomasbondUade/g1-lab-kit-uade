@@ -2,6 +2,12 @@
 .venv/
 __pycache__/
 *.pyc
+*.egg-info/
+
+# Testing
+htmlcov/
+.coverage
+.pytest_cache/
 
 # Environment
 .env
@@ -16,6 +22,9 @@ data/local/
 # Unitree SDK (no se versiona)
 third_party/unitree_sdk2_python/
 
+# Jupyter
+.ipynb_checkpoints/
+
 # Windows
 .DS_Store
-Thumbs.db
+Thums.db

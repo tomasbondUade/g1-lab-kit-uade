@@ -22,7 +22,7 @@ def generate_session_name(
     Genera nombre de sesión estándar.
     
     Args:
-        robot_type: "G1" o "GO2"
+        robot_type: "g1" o "go2" (case-insensitive)
         materia: Nombre de la materia (ej: "Prog1", "Robotica")
         grupo: Nombre del grupo (ej: "G3", "Equipo1")
         timestamp: Timestamp opcional (usa actual si no se provee)
@@ -30,11 +30,18 @@ def generate_session_name(
     Returns:
         str: Nombre de sesión (YYYYMMDD_HHMM_ROBOT_MATERIA_GRUPO)
         
+    Raises:
+        ValueError: Si robot_type no es válido
+        
     Example:
-        >>> generate_session_name("G1", "Prog1", "G3")
+        >>> generate_session_name("g1", "Prog1", "G3")
         '20260120_1030_G1_Prog1_G3'
     """
-    # TODO: Implementar generación
+    # Validar robot_type
+    robot_clean = robot_type.upper()
+    if robot_clean not in ["G1", "GO2"]:
+        raise ValueError(f"Robot type inválido: {robot_type}. Debe ser 'g1' o 'go2'")
+    
     if timestamp is None:
         timestamp = datetime.now()
     
@@ -42,14 +49,13 @@ def generate_session_name(
     time_str = timestamp.strftime("%H%M")
     
     # Sanitizar nombres (sin espacios ni caracteres especiales)
-    robot_clean = robot_type.upper()
     materia_clean = materia.replace(" ", "")
     grupo_clean = grupo.replace(" ", "")
     
     return f"{date_str}_{time_str}_{robot_clean}_{materia_clean}_{grupo_clean}"
 
 
-def parse_session_name(session_name: str) -> Dict[str, str]:
+def parse_session_name(session_name: str) -> Optional[Dict[str, str]]:
     """
     Parsea nombre de sesión estándar.
     
@@ -57,22 +63,22 @@ def parse_session_name(session_name: str) -> Dict[str, str]:
         session_name: Nombre de sesión a parsear
         
     Returns:
-        Dict con componentes: date, time, robot, materia, grupo
-        
-    Raises:
-        ValueError: Si el nombre no sigue el formato estándar
+        Dict con componentes o None si inválido
         
     Example:
         >>> parse_session_name("20260120_1030_G1_Prog1_G3")
         {'date': '20260120', 'time': '1030', 'robot': 'G1', 
          'materia': 'Prog1', 'grupo': 'G3'}
     """
-    # TODO: Implementar parseo con regex
-    pattern = r"^(\d{8})_(\d{4})_([A-Z0-9]+)_([A-Za-z0-9]+)_([A-Za-z0-9]+)$"
+    if not session_name:
+        return None
+    
+    # Pattern con robots válidos: G1, GO2
+    pattern = r"^(\d{8})_(\d{4})_(G1|GO2)_([A-Za-z0-9]+)_([A-Za-z0-9]+)$"
     match = re.match(pattern, session_name)
     
     if not match:
-        raise ValueError(f"Nombre de sesión inválido: {session_name}")
+        return None
     
     return {
         "date": match.group(1),
@@ -83,7 +89,7 @@ def parse_session_name(session_name: str) -> Dict[str, str]:
     }
 
 
-def validate_session_name(session_name: str) -> bool:
+def is_valid_session_name(session_name: str) -> bool:
     """
     Valida que un nombre de sesión siga el formato estándar.
     
@@ -93,11 +99,7 @@ def validate_session_name(session_name: str) -> bool:
     Returns:
         bool: True si válido, False si no
     """
-    try:
-        parse_session_name(session_name)
-        return True
-    except ValueError:
-        return False
+    return parse_session_name(session_name) is not None
 
 
 # TODO: Agregar más utilidades de naming
