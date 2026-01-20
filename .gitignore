@@ -1,0 +1,14 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Unitree SDK (no se versiona)
+third_party/unitree_sdk2_python/
+
+# Windows
+.DS_Store
+Thumbs.db
