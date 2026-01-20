@@ -1,0 +1,38 @@
+# Límites de seguridad para operación en aula (modo clase)
+safety:
+  require_forms_checklist: true
+  require_token_control: true
+  require_clear_perimeter: true
+
+  deadman:
+    enabled: true
+    method: "keyboard_hold"  # keyboard_hold / joystick_trigger (a futuro)
+    key: "SPACE"
+
+  safe_stop:
+    enabled: true
+    method: "software"
+    timeout_ms: 250
+
+session_limits:
+  max_duration_min: 30
+  min_battery_percent_start: 40
+  stop_if_battery_below_percent: 20
+
+risk_levels:
+  # 0: replay (sin robot), 1: postura/gesto, 2: movimiento lento, 3: avanzado
+  max_allowed: 2
+
+motion_limits:
+  global:
+    max_linear_mps: 0.20
+    max_angular_rps: 0.50
+    max_accel_mps2: 0.50
+
+  g1:
+    max_arm_speed: 0.50
+    allow_walking: true
+
+  go2:
+    max_step_height_m: 0.05
+    allow_trot: false

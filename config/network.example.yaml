@@ -1,0 +1,21 @@
+# Configuración de red (solo Ethernet)
+network:
+  transport: "ethernet"        # fijo: ethernet
+  preferred_interface_name: "Ethernet"  # nombre típico en Windows (puede variar)
+
+  addressing:
+    mode: "dhcp"               # "dhcp" o "static"
+    static:
+      pc_ip: "192.168.123.20"
+      netmask: "255.255.255.0"
+      gateway: ""              # opcional
+
+robot_endpoint:
+  # La IP del robot idealmente viene del .env (ROBOT_IP)
+  ip_source: "env"             # "env" o "fixed"
+  fixed_ip: "192.168.123.10"
+
+healthcheck:
+  ping_before_start: true
+  ping_count: 3
+  max_avg_latency_ms: 50

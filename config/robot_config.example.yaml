@@ -1,0 +1,39 @@
+# Configuración general del robot + SDK + telemetría + logging
+robot:
+  type: "G1"            # "G1" o "GO2"
+  asset_id: "G1-01"     # identificador interno / etiqueta física
+  description: "Robot de laboratorio"
+
+sdk:
+  # El SDK se descarga aparte y se ubica en third_party/unitree_sdk2_python
+  repo_path: "../third_party/unitree_sdk2_python"
+  python_package: "unitree_sdk2py"
+
+connection:
+  # La IP real suele venir de .env (ROBOT_IP). Aquí dejamos defaults genéricos.
+  ip_source: "env"            # "env" o "fixed"
+  fixed_ip: "192.168.123.10"  # solo si ip_source="fixed"
+  timeout_ms: 3000
+  retries: 3
+
+telemetry:
+  enabled: true
+  # Si aún no fijaste rates/topics, dejalo en default y lo ajustás cuando implementes el subscriber.
+  target_rate_hz: 50
+  fields:
+    - battery
+    - imu
+    - joint_state
+
+logging:
+  enabled: true
+  base_dir: "../data/sessions"
+  format: "csv"               # "csv" o "parquet" (si agregás soporte)
+  include_metadata: true
+  metadata_fields:
+    - session_name
+    - robot_type
+    - asset_id
+    - operator
+    - course
+    - location
