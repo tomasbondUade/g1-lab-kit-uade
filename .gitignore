@@ -6,6 +6,13 @@ __pycache__/
 # Environment
 .env
 
+# Configuraciones locales (no versionadas)
+config/*.yaml
+!config/*.example.yaml
+
+# Datos reales de sesiones (NO se versionan)
+data/local/
+
 # Unitree SDK (no se versiona)
 third_party/unitree_sdk2_python/
 
