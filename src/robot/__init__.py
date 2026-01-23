@@ -1,8 +1,18 @@
 """
 src.robot - Conexión y comunicación con robot
 
-⚠️ Requiere robot real para testing
+Clase principal: RobotClient
+
+Example:
+    >>> from src.robot import RobotClient
+    >>> 
+    >>> robot = RobotClient()
+    >>> robot.connect()
+    >>> robot.stand_up()
+    >>> robot.damp()
+    >>> robot.disconnect()
 """
 
-# TODO: Implementar cuando sea necesario
-# Este módulo requerirá robot real para desarrollo y testing
+from .client import RobotClient, quick_connect, safe_stop
+
+__all__ = ['RobotClient', 'quick_connect', 'safe_stop']

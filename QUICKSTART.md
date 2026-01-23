@@ -49,64 +49,107 @@ cd g1-lab-kit-uade
 
 ---
 
-## 🐍 Paso 3: Instalación automática
+## 🐍 Paso 3: Instalación
 
-### Opción recomendada: Script automático
+### Instalación manual (Recomendada - Probada)
+
+```powershell
+# 1. Crear entorno virtual
+python -m venv env
+.\env\Scripts\Activate.ps1
+
+# 2. Instalar SDK de Unitree
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -e third_party/unitree_sdk2_python
+
+# 3. Instalar dependencias
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r env/requirements.txt
+
+# 4. Instalar dependencias adicionales
+pip install python-dotenv pandas
+
+# 5. Crear archivo .env
+copy .env.example .env
+```
+
+**Nota sobre SSL:** Los flags `--trusted-host` son necesarios en redes corporativas/UADE que usan certificados SSL internos.
+
+### Opción alternativa: Script automático
 
 ```powershell
 .\scripts\setup_windows.ps1
 ```
 
-Este script:
-- ✅ Descarga el SDK de Unitree
-- ✅ Crea entorno virtual Python (`.venv`)
-- ✅ Instala todas las dependencias
-- ✅ Crea archivo `.env` desde template
-- ✅ Verifica la instalación
-
-### Opción manual (si el script falla)
-
-```powershell
-# 1. Descargar SDK
-cd third_party
-git clone https://github.com/unitreerobotics/unitree_sdk2_python.git
-cd ..
-
-# 2. Crear entorno virtual
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-
-# 3. Instalar dependencias
-pip install -r env\requirements.txt
-
-# 4. Instalar SDK
-cd third_party\unitree_sdk2_python
-pip install -e .
-cd ..\..
-
-# 5. Crear archivo .env
-copy env\.env.example .env
-```
+⚠️ Si el script falla por SSL, usa la instalación manual arriba.
 
 ---
 
 ## ✔️ Paso 4: Verificar instalación
 
 ```powershell
-.\scripts\verify_setup.ps1
+# Asegúrate de que el entorno virtual esté activo
+.\env\Scripts\Activate.ps1
+
+# Ejecutar validación del entorno
+python examples/01_hello_robot.py
 ```
 
-Deberías ver: ✅ TODO CORRECTO
+**Salida esperada:**
+```
+✓ Archivo .env encontrado
+✓ SDK detectado
+✓ config/, data/, third_party/, src/, examples/
+✅ Todo listo! El kit está configurado correctamente.
+```
 
 Si hay errores, consulta: [docs/05_troubleshooting.md](docs/05_troubleshooting.md)
 
 ---
 
-## ⚙️ Paso 5: Configurar el kit
+```env
+# Tipo de robot
+ROBOT_TYPE=go2        # o 'g1' si usas robot humanoide
 
-Edita el archivo `.env` en la raíz del proyecto:
+# IP del robot (para modo live)
+ROBOT_IP=192.168.123.18
+
+# Interfaz de red
+NETWORK_INTERFACE=Ethernet
+
+# Modo de datos
+DATA_MODE=live        # o 'replay' para usar datos grabados
+```
+
+---
+
+## 🚀 Paso 6: Primera prueba
+
+### Prueba sin robot (Modo Replay)
+```powershell
+# Activar entorno virtual
+.\env\Scripts\Activate.ps1
+
+# Analizar sesión de ejemplo
+python examples/05_replay_demo.py
+```
+
+**Resultado esperado:** Análisis de sesión `20260115_1430_G1_ROBOTICA_G3`
+
+### Prueba con robot (Modo Live)
+
+**Requisitos previos:**
+- Robot conectado vía Ethernet
+- IP configurada en `.env`
+- Robot encendido
 
 ```powershell
+# 1. Verificar conectividad
+ping 192.168.123.18
+
+# 2. Monitor de telemetría en tiempo real
+python examples/02_telemetry_check.py --mode live
+```
+
+**Resultado esperado:** Monitor actualizándose cada 0.5s con datos del robot (~300 Hz)powershell
 notepad .env
 ```
 

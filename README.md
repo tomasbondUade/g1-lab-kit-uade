@@ -10,11 +10,12 @@
 Este repositorio proporciona **todo lo necesario** para implementar prácticas de robótica con robots Unitree en UADE:
 
 ✅ **7 guías completas** - Instalación, red, seguridad, troubleshooting, evaluación  
-✅ **Ejemplos funcionales** - Demo de replay (`05_replay_demo.py`) validado  
-✅ **Sesión de ejemplo** - Datos sintéticos para testing sin robot  
+✅ **6 ejemplos funcionales** - Todos implementados y probados con robot Go2  
+✅ **Sesión de ejemplo** - Datos reales de robot Go2 (3001 registros @298Hz)  
 ✅ **Modo simulación** - Test y desarrollo sin necesidad de robot físico  
-✅ **Tests validados** - 20/20 naming tests + 7/16 replay tests  
-✅ **Solución SSL** - Documentación para certificados en redes corporativas  
+✅ **Telemetría en tiempo real** - Monitor a ~300 Hz con el robot  
+✅ **Sistema de grabación** - Sesiones con metadata completa en CSV  
+✅ **Solución CycloneDDS** - Fix para error de log en Windows  
 
 ---
 
@@ -38,38 +39,59 @@ pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -e thi
 
 # 3. Instalar dependencias
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r env/requirements.txt
+pip install python-dotenv pandas  # Dependencias adicionales
 
 # 4. Configurar
-cp .env.example .env
-# Editar .env: ROBOT_TYPE=go2 o g1
+copy .env.example .env
+# Editar .env: ROBOT_TYPE=go2 o g1, ROBOT_IP=192.168.123.18
 
-# 5. Probar sin robot (modo replay)
+# 5. Verificar instalación
+python examples/01_hello_robot.py
+
+# 6. Probar sin robot (modo replay)
 python examples/05_replay_demo.py
 ```
 
-✅ **Resultado esperado**: Carga y muestra la sesión de ejemplo `20260115_1430_G1_ROBOTICA_G3`
+✅ **Resultado esperado**: Validación completa del entorno + análisis de sesión `20260115_1430_G1_ROBOTICA_G3`
 
 ---
 
 ## 💡 Ejemplos disponibles
 
-### 🎯 Modo Replay (sin robot)
+### ✅ Todos los ejemplos están implementados y probados
+
+#### Sin robot (Modo Replay)
 ```powershell
-# Demo de análisis de sesiones (funcional)
+# 1. Validar entorno
+python examples/01_hello_robot.py
+
+# 2. Análisis de sesiones grabadas
 python examples/05_replay_demo.py
 
-# Notebooks de análisis
-jupyter notebook notebooks/01_replay_analysis.ipynb
+# 3. Simulación de parada segura
+python examples/04_safe_stop.py --mode replay
 ```
 
-### 📁 Otros ejemplos en `/examples`
-- `01_hello_robot.py` - Conexión básica con el robot
-- `02_telemetry_collect.py` - Recolección de datos de sensores
-- `03_log_session.py` - Sistema de logging
-- `04_safe_stop.py` - Implementación de parada segura
-- `05_replay_demo.py` - ✅ **Funcional** - Análisis de sesiones grabadas
+#### Con robot conectado (Modo Live)
+```powershell
+# Asegúrate de tener el robot conectado en 192.168.123.X
 
-**Nota**: Los ejemplos 01-04 son plantillas base. Ver [examples/README.md](examples/README.md)
+# 1. Monitor de telemetría en tiempo real
+python examples/02_telemetry_check.py --mode live
+
+# 2. Grabar sesión (30 segundos por defecto)
+python examples/03_log_session.py --duration 30 --materia Robotica --grupo G1
+
+# 3. Test de parada segura (REQUIERE PROTOCOLO DE SEGURIDAD)
+python examples/04_safe_stop.py --mode live --confirm
+```
+
+### 📊 Ejemplos y su estado
+- ✅ `01_hello_robot.py` - Validación de entorno (SDK, .env, estructura)
+- ✅ `02_telemetry_check.py` - Monitor en tiempo real (~300 Hz)
+- ✅ `03_log_session.py` - Grabación de sesiones con metadata
+- ✅ `04_safe_stop.py` - Parada segura con logging
+- ✅ `05_replay_demo.py` - Análisis de sesiones grabadas
 
 ---
 

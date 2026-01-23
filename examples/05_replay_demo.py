@@ -35,18 +35,26 @@ def main():
     # Parsear argumentos
     if len(sys.argv) > 1:
         session_name = sys.argv[1]
+        # Buscar primero en local, luego en samples
         session_path = project_root / "data" / "local" / "sessions" / session_name
         if not session_path.exists():
             session_path = project_root / "data" / "samples" / "sessions" / session_name
     else:
-        # Usar primera sesión de samples
+        # Buscar sesiones primero en local, luego en samples
+        local_dir = project_root / "data" / "local" / "sessions"
         samples_dir = project_root / "data" / "samples" / "sessions"
-        sessions = list_sessions(samples_dir)
+        
+        sessions = list_sessions(local_dir)
         if not sessions:
-            print("✗ No hay sesiones disponibles en data/samples/sessions/")
-            print("\nCrea una sesión o usa:")
-            print("  python examples/05_replay_demo.py [nombre_sesion]")
+            sessions = list_sessions(samples_dir)
+        
+        if not sessions:
+            print("✗ No hay sesiones disponibles")
+            print("\n💡 Opciones:")
+            print("  1. Graba una sesión: python examples/03_log_session.py")
+            print("  2. Especifica una sesión: python examples/05_replay_demo.py [nombre_sesion]")
             sys.exit(1)
+        
         session_path = sessions[0]
         session_name = sessions[0].name
     
@@ -56,6 +64,16 @@ def main():
     if not session_path.exists():
         print(f"✗ Sesión no encontrada: {session_name}")
         print(f"  Buscado en: {session_path}")
+        print("\n💡 Sesiones disponibles:")
+        
+        # Listar sesiones disponibles
+        for dir_path in [project_root / "data" / "local" / "sessions",
+                         project_root / "data" / "samples" / "sessions"]:
+            sessions = list_sessions(dir_path)
+            if sessions:
+                print(f"\n  En {dir_path.relative_to(project_root)}:")
+                for s in sessions:
+                    print(f"    - {s.name}")
         sys.exit(1)
     
     # Cargar sesión
@@ -84,8 +102,10 @@ def main():
         print(f"\n  Primeras 5 filas:")
         print(df.head().to_string(index=False))
         
-        print(f"\n  Estadísticas básicas:")
-        print(df.describe().to_string())
+        print(f"\n  Estadísticas básicas (posición):")
+        if 'pos_x' in df.columns:
+            stats = df[['pos_x', 'pos_y', 'pos_z', 'body_height']].describe()
+            print(stats.to_string())
     else:
         print("  ⚠ No hay datos de telemetría disponibles")
     
@@ -96,7 +116,9 @@ def main():
     
     if commands:
         for cmd in commands[:10]:  # Primeros 10
-            print(f"  {cmd}")
+            print(f"  [{cmd['timestamp']}] {cmd['event']}")
+            if cmd['details']:
+                print(f"      {cmd['details']}")
         if len(commands) > 10:
             print(f"  ... y {len(commands) - 10} más")
     else:
@@ -105,67 +127,28 @@ def main():
     # Resumen
     print("\n[5] Resumen:")
     print("-" * 60)
-    duration = session.duration()
-    if duration:
-        print(f"  Duración total: {metadata.get('duration_seconds', 'N/A')} segundos ({duration:.1f} minutos)")
-    else:
-        print(f"  Duración total: N/A")
+    duration_seconds = metadata.get('duration_seconds', 0)
+    total_records = metadata.get('total_records', len(df) if df is not None else 0)
+    
+    print(f"  Duración total: {duration_seconds:.1f} segundos ({duration_seconds/60:.2f} minutos)")
     print(f"  Robot: {metadata.get('robot_type', 'N/A').upper()}")
-    print(f"  Nivel de riesgo: {metadata.get('risk_level', 'N/A')}")
+    print(f"  Registros totales: {total_records}")
+    if duration_seconds > 0 and total_records > 0:
+        print(f"  Frecuencia: ~{total_records/duration_seconds:.0f} Hz")
+    
+    if 'operator' in metadata:
+        print(f"  Operador: {metadata['operator']}")
+    if 'materia' in metadata:
+        print(f"  Materia: {metadata['materia']} - Grupo: {metadata.get('grupo', 'N/A')}")
     
     print("\n" + "=" * 60)
     print("✓ Replay completado exitosamente")
-    print("\nPara análisis más detallado, usa:")
-    print(f"  notebooks/01_replay_analysis.ipynb")
+    print("\n💡 Para análisis más detallado:")
+    print(f"  - Jupyter: notebooks/01_replay_analysis.ipynb")
+    print(f"  - CSV directo: {session_path / 'telemetry.csv'}")
     print("=" * 60)
 
 
 if __name__ == "__main__":
     main()
-# - Opcional: graficar (matplotlib)
-
-def main():
-    print("=" * 50)
-    print("G1/Go2 Lab Kit - Replay Demo")
-    print("=" * 50)
-    
-    # TODO: Parsear argumentos
-    # import argparse
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--session", default="data/samples/sessions/example_session",
-    #                     help="Path to session directory")
-    # args = parser.parse_args()
-    
-    # TODO: Validar que existe la sesión
-    # from pathlib import Path
-    # session_path = Path(args.session)
-    # if not session_path.exists():
-    #     print(f"ERROR: Sesión no encontrada: {args.session}")
-    #     return
-    
-    # TODO: Cargar metadata.json
-    # import json
-    # with open(session_path / "metadata.json") as f:
-    #     metadata = json.load(f)
-    # print(f"\nSesión: {metadata.get('session_name', 'N/A')}")
-    # print(f"Robot: {metadata.get('robot_type', 'N/A')}")
-    # print(f"Operador: {metadata.get('operator', 'N/A')}")
-    
-    # TODO: Cargar telemetry.csv
-    # import pandas as pd
-    # telemetry = pd.read_csv(session_path / "telemetry.csv")
-    # print(f"\nDuración: {telemetry['timestamp'].max() - telemetry['timestamp'].min()} s")
-    # print("\nEstadísticas:")
-    # print(telemetry.describe())
-    
-    # TODO: Opcional - graficar
-    # import matplotlib.pyplot as plt
-    # telemetry.plot(x="timestamp", y="battery", title="Batería")
-    # plt.show()
-    
-    print("\n[TODO] Este ejemplo está pendiente de implementación.")
-    print("Ver: examples/README.md para más información.")
-    print("\nEste ejemplo NO requiere robot - solo data/samples/")
-
-if __name__ == "__main__":
     main()
