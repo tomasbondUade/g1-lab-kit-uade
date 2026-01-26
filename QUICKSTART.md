@@ -43,13 +43,35 @@ Descargar: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 cd $HOME\Desktop  # O la ubicación que prefieras
 
 # Clonar el repositorio
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/tomasbondUade/g1-lab-kit-uade.git
 cd g1-lab-kit-uade
 ```
 
 ---
 
-## 🐍 Paso 3: Instalación
+## 🤖 Paso 3: Instalar SDK de Unitree
+
+**Antes de instalar las dependencias del Lab Kit, debes instalar el SDK de Unitree:**
+
+Consulta las instrucciones completas en: [third_party/README.md](third_party/README.md)
+
+### Opción rápida con Git:
+```powershell
+# Desde la raíz del proyecto
+cd third_party
+git clone https://github.com/unitreerobotics/unitree_sdk2_python.git
+cd ..
+```
+
+### Verificar que se instaló correctamente:
+```powershell
+# Deberías ver carpetas: example/, unitree_sdk2py/, setup.py, etc.
+ls third_party\unitree_sdk2_python
+```
+
+---
+
+## 🐍 Paso 4: Crear entorno virtual e instalar dependencias
 
 ### Instalación manual (Recomendada - Probada)
 
@@ -58,17 +80,17 @@ cd g1-lab-kit-uade
 python -m venv env
 .\env\Scripts\Activate.ps1
 
-# 2. Instalar SDK de Unitree
+# 2. Instalar cyclonedds (dependencia crítica)
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org cyclonedds==0.10.2
+
+# 3. Instalar SDK de Unitree
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -e third_party/unitree_sdk2_python
 
-# 3. Instalar dependencias
+# 4. Instalar dependencias del Lab Kit
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r env/requirements.txt
 
-# 4. Instalar dependencias adicionales
-pip install python-dotenv pandas
-
-# 5. Crear archivo .env
-copy .env.example .env
+# 5. Instalar dependencias adicionales
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org python-dotenv pandas
 ```
 
 **Nota sobre SSL:** Los flags `--trusted-host` son necesarios en redes corporativas/UADE que usan certificados SSL internos.
@@ -83,7 +105,37 @@ copy .env.example .env
 
 ---
 
-## ✔️ Paso 4: Verificar instalación
+## ⚙️ Paso 5: Configurar archivo .env
+
+```powershell
+# Crear archivo .env desde la plantilla
+copy .env.example .env
+
+# Editar configuración
+notepad .env
+```
+
+Configura los valores según tu setup:
+
+```env
+# Tipo de robot
+ROBOT_TYPE=go2        # o 'g1' si usas robot humanoide
+
+# IP del robot (para modo live)
+ROBOT_IP=192.168.123.18
+
+# Interfaz de red (obtenerla con: ipconfig)
+NETWORK_INTERFACE=Ethernet
+
+# Modo de datos
+DATA_MODE=replay      # 'replay' para datos grabados, 'live' para robot real
+```
+
+> **Tip**: Puedes empezar con `DATA_MODE=replay` para probar sin robot.
+
+---
+
+## ✔️ Paso 6: Verificar instalación (sin robot)
 
 ```powershell
 # Asegúrate de que el entorno virtual esté activo
@@ -105,95 +157,65 @@ Si hay errores, consulta: [docs/05_troubleshooting.md](docs/05_troubleshooting.m
 
 ---
 
-```env
-# Tipo de robot
-ROBOT_TYPE=go2        # o 'g1' si usas robot humanoide
+## 🎮 Paso 7: Primera prueba (Modo Replay - sin robot)
 
-# IP del robot (para modo live)
-ROBOT_IP=192.168.123.18
-
-# Interfaz de red
-NETWORK_INTERFACE=Ethernet
-
-# Modo de datos
-DATA_MODE=live        # o 'replay' para usar datos grabados
-```
-
----
-
-## 🚀 Paso 6: Primera prueba
-
-### Prueba sin robot (Modo Replay)
 ```powershell
-# Activar entorno virtual
-.\env\Scripts\Activate.ps1
-
-# Analizar sesión de ejemplo
+# Analizar sesión de ejemplo incluida
 python examples/05_replay_demo.py
 ```
 
-**Resultado esperado:** Análisis de sesión `20260115_1430_G1_ROBOTICA_G3`
+**Resultado esperado:** Análisis completo de la sesión `20260115_1430_G1_ROBOTICA_G3` con estadísticas de movimiento.
 
-### Prueba con robot (Modo Live)
+Este modo te permite aprender a usar el Lab Kit sin necesidad de tener el robot conectado.
 
-**Requisitos previos:**
-- Robot conectado vía Ethernet
-- IP configurada en `.env`
-- Robot encendido
+---
+
+## 🔌 Paso 8 (Opcional): Conectar al robot y prueba en vivo
+
+### 8.1 Conectar al robot
+
+1. **Encender el robot**
+2. **Conectar por Ethernet** (recomendado) o WiFi
+   - Ver instrucciones detalladas: [docs/02_configuracion_red.md](docs/02_configuracion_red.md)
+3. **Anotar la IP del robot** (ejemplo: `192.168.123.18`)
+4. **Obtener nombre de interfaz de red**:
+   ```powershell
+   ipconfig
+   ```
+   Buscar el adaptador conectado al robot (ej: `Ethernet`, `Wi-Fi`)
+
+### 8.2 Actualizar .env para modo live
 
 ```powershell
-# 1. Verificar conectividad
-ping 192.168.123.18
-
-# 2. Monitor de telemetría en tiempo real
-python examples/02_telemetry_check.py --mode live
-```
-
-**Resultado esperado:** Monitor actualizándose cada 0.5s con datos del robot (~300 Hz)powershell
 notepad .env
 ```
 
-Completa los valores necesarios:
-7: Primera prueba
-
-### Activar entorno virtual (si no está activo)
-```powershell
-.\.TWORK_INTERFACE=Ethernet # Tu interfaz de red
+Modificar:
+```env
+ROBOT_IP=192.168.123.18      # Tu IP del robot
+NETWORK_INTERFACE=Ethernet    # Tu interfaz de red
+DATA_MODE=live                # Cambiar a live
 ```
 
-> **Importante**: El archivo `.env` ya debería existir (creado por el script de setup).
+### 8.3 Verificar conectividad
 
----
-
-## 🔌 Paso 6: Conectar al robot
-
-1. **Encender el robot**
-2. **Conectar por WiFi o Ethernet**
-   - Ver instrucciones detalladas: [docs/02_configuracion_red.md](docs/02_configuracion_red.md)
-3. **Anotar la IP del robot** (ej: 192.168.123.161)
-
----
-
-## 🎮 Paso 6: Primera prueba
-
-### Activar entorno virtual (si no está activo)
 ```powershell
-.\venv\Scripts\Activate.ps1
+# Ping al robot
+ping 192.168.123.18
+
+# Si responde, el robot está accesible
 ```
 
-### Ejecutar ejemplo básico
+### 8.4 Primera prueba con robot
+
 ```powershell
-# Ejemplo: Leer estado del robot
-cd third_party\unitree_sdk2_python\example\g1\high_level
-python read_highstate.py [NOMBRE_INTERFAZ_RED]
+# Monitor de telemetría en tiempo real
+python examples/02_telemetry_check.py --mode live
 ```
 
-Reemplaza `[NOMBRE_INTERFAZ_RED]` con el nombre de tu adaptador de red.
+**Resultado esperado:** Monitor actualizándose cada 0.5s con datos del robot en tiempo real
 
-Para ver interfaces de red disponibles:
-```powershell
-ipconfig
-```
+**Resultado esperado:** Monitor actualizándose cada 0.5s con datos del robot en tiempo real
 
 ---
 
@@ -205,13 +227,27 @@ Una vez que la instalación funcione:
    - [Introducción y objetivos](docs/00_intro_y_objetivo.md)
    - [Configuración de red](docs/02_configuracion_red.md)
    - [Ejemplos y pruebas](docs/03_primer_ejecucion_y_pruebas.md)
+   - [Seguridad en el aula](docs/04_seguridad_operacion_aula.md)
 
-2. **Revisa los ejemplos disponibles**:
+2. **Explora los ejemplos del Lab Kit**:
+   - `examples/01_hello_robot.py` — Verificación de entorno
+   - `examples/02_telemetry_check.py` — Monitor en tiempo real
+   - `examples/03_log_session.py` — Grabación de sesiones
+   - `examples/04_safe_stop.py` — Sistema de parada de emergencia
+   - `examples/05_replay_demo.py` — Análisis de datos grabados
+
+3. **Revisa los ejemplos del SDK de Unitree**:
    - `third_party/unitree_sdk2_python/example/g1/` — Ejemplos para G1
    - `third_party/unitree_sdk2_python/example/go2/` — Ejemplos para Go2
 
-3. **Lee sobre seguridad**:
-   - [Seguridad en el aula](docs/04_seguridad_operacion_aula.md)
+4. **Usa los notebooks de Jupyter**:
+   ```powershell
+   jupyter notebook notebooks/
+   ```
+   - `00_intro.ipynb` — Introducción al Lab Kit
+   - `01_replay_analysis.ipynb` — Análisis de sesiones
+   - `02_telemetry_viz.ipynb` — Visualización de telemetría
+   - `03_data_exploration.ipynb` — Exploración de datos
 
 ---
 
@@ -234,6 +270,12 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 - Reinstalar Python marcando "Add Python to PATH"
 - Reiniciar PowerShell/CMD
 
+### No puedo instalar el SDK de Unitree
+→ Consulta [third_party/README.md](third_party/README.md) para instrucciones detalladas
+
+### Robot no responde al ping
+→ Verifica configuración de red en [docs/02_configuracion_red.md](docs/02_configuracion_red.md)
+
 ### Más problemas
 → Consulta [docs/05_troubleshooting.md](docs/05_troubleshooting.md)
 
@@ -242,6 +284,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ## 🆘 Soporte
 
 - **Documentación completa**: Carpeta `docs/`
+- **Ejemplos del Lab Kit**: Carpeta `examples/`
 - **Ejemplos del SDK**: `third_party/unitree_sdk2_python/example/`
 - **Equipo docente**: Contacta a tu profesor/ayudante
 

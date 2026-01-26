@@ -30,25 +30,33 @@ Este repositorio proporciona **todo lo necesario** para implementar prácticas d
 ## 🚀 Inicio rápido (5 minutos)
 
 ```powershell
-# 1. Crear entorno virtual
+# 1. Instalar SDK de Unitree (ver sección "SDK de Unitree" más abajo)
+cd third_party
+git clone https://github.com/unitreerobotics/unitree_sdk2_python.git
+cd ..
+
+# 2. Crear entorno virtual
 python -m venv env
 .\env\Scripts\Activate.ps1
 
-# 2. Instalar SDK (con workaround SSL para red UADE/corporativa)
+# 3. Instalar cyclonedds (dependencia crítica)
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org cyclonedds==0.10.2
+
+# 4. Instalar SDK (con workaround SSL para red UADE/corporativa)
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -e third_party/unitree_sdk2_python
 
-# 3. Instalar dependencias
+# 5. Instalar dependencias del Lab Kit
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r env/requirements.txt
-pip install python-dotenv pandas  # Dependencias adicionales
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org python-dotenv pandas
 
-# 4. Configurar
+# 6. Configurar
 copy .env.example .env
 # Editar .env: ROBOT_TYPE=go2 o g1, ROBOT_IP=192.168.123.18
 
-# 5. Verificar instalación
+# 7. Verificar instalación
 python examples/01_hello_robot.py
 
-# 6. Probar sin robot (modo replay)
+# 8. Probar sin robot (modo replay)
 python examples/05_replay_demo.py
 ```
 
@@ -196,16 +204,35 @@ Más soluciones: [docs/05_troubleshooting.md](docs/05_troubleshooting.md)
 
 ## 📦 SDK de Unitree
 
-El SDK oficial **NO está incluido** en este repo (razones de licencia).
+El SDK oficial **NO está incluido** en este repo (razones de licencia). Debes descargarlo antes de instalar las dependencias.
 
-**Instalación**:
+### Cómo obtener el SDK:
+
+**Opción 1: Clonar con Git (Recomendado)**
 ```powershell
+# Desde la raíz del proyecto
+cd third_party
+git clone https://github.com/unitreerobotics/unitree_sdk2_python.git
+cd ..
+```
+
+**Opción 2: Descarga manual**
+1. Descargar desde: https://github.com/unitreerobotics/unitree_sdk2_python
+2. Extraer en: `third_party/unitree_sdk2_python/`
+3. Verificar que existan: `setup.py`, `unitree_sdk2py/`, `example/`
+
+### Instalación del SDK:
+```powershell
+# Una vez descargado, instalar con pip
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org cyclonedds==0.10.2
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -e third_party/unitree_sdk2_python
 ```
 
+**Más información**: Ver [third_party/README.md](third_party/README.md)
+
 - Repositorio: https://github.com/unitreerobotics/unitree_sdk2_python
 - Versión: 1.0.1
-- Docs: `third_party/unitree_sdk2_python/README.md`
+- Docs oficiales: `third_party/unitree_sdk2_python/README.md`
 
 ---
 
