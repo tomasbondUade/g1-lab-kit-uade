@@ -28,23 +28,31 @@ Si prefieres instalar manualmente o el script automático falla:
 Desde la raíz del repositorio del Lab Kit:
 
 ```powershell
+# 1. Instalar cyclonedds PRIMERO (dependencia crítica)
+pip install cyclonedds==0.10.2
+
+# 2. Clonar el SDK
 cd third_party
 git clone https://github.com/unitreerobotics/unitree_sdk2_python.git
 cd unitree_sdk2_python
 
-# Instalar el SDK
+# 3. Instalar el SDK
 pip install -e .
 
-# Volver a la raíz
+# 4. Volver a la raíz
 cd ..\..
 ```
 
 ### Opción B: Descargar ZIP
 
-1. Ir a: https://github.com/unitreerobotics/unitree_sdk2_python
-2. Click en "Code" → "Download ZIP"
-3. Extraer el contenido en: `third_party/unitree_sdk2_python/`
-4. Instalar:
+1. **Instalar cyclonedds primero**:
+   ```powershell
+   pip install cyclonedds==0.10.2
+   ```
+2. Ir a: https://github.com/unitreerobotics/unitree_sdk2_python
+3. Click en "Code" → "Download ZIP"
+4. Extraer el contenido en: `third_party/unitree_sdk2_python/`
+5. Instalar el SDK:
    ```powershell
    cd third_party\unitree_sdk2_python
    pip install -e .
@@ -104,24 +112,6 @@ El SDK requiere las siguientes librerías (se instalan automáticamente):
 ---
 
 ## ❓ Problemas comunes
-
-### Error: "Could not locate cyclonedds"
-
-Durante la instalación del SDK puede aparecer:
-```
-Could not locate cyclonedds. Try to set CYCLONEDDS_HOME or CMAKE_PREFIX_PATH
-```
-
-**Solución**:
-```powershell
-# Instalar cyclonedds primero
-pip install cyclonedds==0.10.2
-
-# Luego reinstalar el SDK
-cd third_party\unitree_sdk2_python
-pip install -e .
-cd ..\..
-```
 
 ### Error: "Microsoft Visual C++ 14.0 or greater is required"
 
