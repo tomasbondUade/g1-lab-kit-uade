@@ -8,7 +8,6 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
-env/
 data/local/
 .DS_Store
 Thumbs.db
