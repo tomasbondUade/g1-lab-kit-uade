@@ -1,0 +1,12 @@
+services:
+  unitree-lab:
+    build: .
+    image: g1-lab-kit-uade:latest
+    container_name: g1-lab-kit-uade
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    stdin_open: true
+    tty: true
+    privileged: true
+    network_mode: host
